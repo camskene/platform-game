@@ -17,7 +17,13 @@ Hero.prototype.move = function(direction) {
 
 Hero.prototype.jump = function() {
   const JUMP_SPEED = 600;
-  this.body.velocity.y = -JUMP_SPEED;
+  let canJump = this.body.touching.down;
+
+  if (canJump) {
+      this.body.velocity.y = -JUMP_SPEED;
+  }
+
+  return canJump;
 };
 
 PlayState = {};
