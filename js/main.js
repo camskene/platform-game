@@ -44,7 +44,12 @@ PlayState.create = function() {
 };
 
 PlayState.update = function() {
+  this._handleCollisions();
   this._handleInput();
+};
+
+PlayState._handleCollisions = function () {
+  this.game.physics.arcade.collide(this.hero, this.platforms);
 };
 
 PlayState._handleInput = function() {
@@ -58,12 +63,21 @@ PlayState._handleInput = function() {
 };
 
 PlayState._loadLevel = function(data) {
+  this.platforms = this.game.add.group();
   data.platforms.forEach(this._spawnPlatform, this);
   this._spawnCharacters({ hero: data.hero });
+
+  // enable gravity
+  const GRAVITY = 1200;
+  this.game.physics.arcade.gravity.y = GRAVITY;
+
 };
 
 PlayState._spawnPlatform = function(platform) {
-  this.game.add.sprite(platform.x, platform.y, platform.image);
+  let sprite = this.platforms.create(platform.x, platform.y, platform.image);
+  this.game.physics.enable(sprite);
+  sprite.body.allowGravity = false;
+  sprite.body.immovable = true;
 };
 
 PlayState._spawnCharacters = function(data) {
