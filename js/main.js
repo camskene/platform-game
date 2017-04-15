@@ -56,12 +56,14 @@ PlayState.preload = function() {
   this.game.load.image('grass:1x1', 'images/grass_1x1.png');
   this.game.load.image('hero', 'images/hero_stopped.png');
   this.game.load.audio('sfx:jump', 'audio/jump.wav');
+  this.game.load.audio('sfx:coin', 'audio/coin.wav');
   this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
 };
 
 PlayState.create = function() {
   this.sfx = {
-    jump: this.game.add.audio('sfx:jump')
+    jump: this.game.add.audio('sfx:jump'),
+    coin: this.game.add.audio('sfx:coin')
   };
 
   this.game.add.image(0, 0, 'background');
@@ -125,6 +127,7 @@ PlayState._spawnCoin = function(coin) {
 };
 
 PlayState._onHeroVsCoin = function(hero, coin) {
+  this.sfx.coin.play();
   coin.kill();
 };
 
