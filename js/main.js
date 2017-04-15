@@ -15,6 +15,11 @@ Hero.prototype.move = function(direction) {
   this.body.velocity.x = direction * SPEED;
 };
 
+Hero.prototype.jump = function() {
+  const JUMP_SPEED = 600;
+  this.body.velocity.y = -JUMP_SPEED;
+};
+
 PlayState = {};
 
 PlayState.init = function() {
@@ -22,8 +27,13 @@ PlayState.init = function() {
 
   this.keys = this.game.input.keyboard.addKeys({
     left: Phaser.KeyCode.LEFT,
-    right: Phaser.KeyCode.RIGHT
+    right: Phaser.KeyCode.RIGHT,
+    up: Phaser.KeyCode.UP
   });
+
+  this.keys.up.onDown.add(function() {
+    this.hero.jump();
+  }, this);
 };
 
 PlayState.preload = function() {
