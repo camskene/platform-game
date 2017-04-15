@@ -56,6 +56,7 @@ PlayState.preload = function() {
   this.game.load.image('grass:1x1', 'images/grass_1x1.png');
   this.game.load.image('hero', 'images/hero_stopped.png');
   this.game.load.audio('sfx:jump', 'audio/jump.wav');
+  this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
 };
 
 PlayState.create = function() {
@@ -88,13 +89,16 @@ PlayState._handleInput = function() {
 
 PlayState._loadLevel = function(data) {
   this.platforms = this.game.add.group();
+  this.coins = this.game.add.group();
+
   data.platforms.forEach(this._spawnPlatform, this);
+  data.coins.forEach(this._spawnCoin, this);
+
   this._spawnCharacters({ hero: data.hero });
 
   // enable gravity
   const GRAVITY = 1200;
   this.game.physics.arcade.gravity.y = GRAVITY;
-
 };
 
 PlayState._spawnPlatform = function(platform) {
@@ -107,6 +111,11 @@ PlayState._spawnPlatform = function(platform) {
 PlayState._spawnCharacters = function(data) {
   this.hero = new Hero(this.game, data.hero.x, data.hero.y);
   this.game.add.existing(this.hero);
+};
+
+PlayState._spawnCoin = function(coin) {
+  let sprite = this.coins.create(coin.x, coin.y, 'coin');
+  sprite.anchor.set(0.5, 0.5);
 };
 
 window.onload = function() {
