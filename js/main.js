@@ -61,6 +61,14 @@ Spider.prototype.update = function() {
   }
 };
 
+Spider.prototype.die = function() {
+  this.body.enable = false;
+
+  this.animations.play('die').onComplete.addOnce(function() {
+    this.kill();
+  }, this);
+};
+
 PlayState = {};
 
 PlayState.init = function() {
@@ -195,7 +203,7 @@ PlayState._onHeroVsCoin = function(hero, coin) {
 PlayState._onHeroVsEnemy = function(hero, enemy) {
   if (hero.body.velocity.y > 0) { // kill enemies when hero is falling
     hero.bounce();
-    enemy.kill();
+    enemy.die();
     this.sfx.stomp.play();
   } else { // game over -> restart the game
     this.sfx.stomp.play();
