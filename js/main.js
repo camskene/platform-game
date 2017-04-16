@@ -86,6 +86,8 @@ PlayState.init = function() {
       this.sfx.jump.play();
     }
   }, this);
+
+  this.coinPickupCount = 0;
 };
 
 PlayState.preload = function() {
@@ -197,6 +199,7 @@ PlayState._spawnEnemyWall = function(x, y, side) {
 
 PlayState._onHeroVsCoin = function(hero, coin) {
   this.sfx.coin.play();
+  this.coinPickupCount++;
   coin.kill();
 };
 
