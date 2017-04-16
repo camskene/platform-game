@@ -4,6 +4,11 @@ function Hero(game, x, y) {
   this.anchor.set(0.5, 0.5);
   this.game.physics.enable(this);
   this.body.collideWorldBounds = true;
+
+  this.animations.add('stop', [0]);
+  this.animations.add('run', [1, 2], 8, true); // 8fps looped
+  this.animations.add('jump', [3]);
+  this.animations.add('fall', [4]);
 }
 
 // inherit from Phaser.Sprite
@@ -13,6 +18,12 @@ Hero.prototype.constructor = Hero;
 Hero.prototype.move = function(direction) {
   const SPEED = 200;
   this.body.velocity.x = direction * SPEED;
+
+  if (this.body.velocity.x < 0) {
+    this.scale.x = -1;
+  } else if (this.body.velocity.x > 0) {
+    this.scale.x = 1;
+  }
 };
 
 Hero.prototype.jump = function() {
@@ -29,6 +40,28 @@ Hero.prototype.jump = function() {
 Hero.prototype.bounce = function() {
   const BOUNCE_SPEED = 200;
   this.body.velocity.y = -BOUNCE_SPEED;
+};
+
+Hero.prototype.update = function() {
+  let animationName = this._getAnimationName();
+
+  if (this.animations.name !== animationName) {
+    this.animations.play(animationName);
+  }
+};
+
+Hero.prototype._getAnimationName = function() {
+  let name = 'stop';
+
+  if (this.body.velocity.y < 0) {
+    name = 'jump';
+  } else if (this.body.velocity.y >= 0 && !this.body.touching.down) {
+    name = 'fall';
+  } else if (this.body.velocity.x !== 0 && this.body.touching.down) {
+    name = 'run';
+  }
+
+  return name;
 };
 
 function Spider(game, x, y) {
@@ -99,7 +132,6 @@ PlayState.preload = function() {
   this.game.load.image('grass:4x1', 'images/grass_4x1.png');
   this.game.load.image('grass:2x1', 'images/grass_2x1.png');
   this.game.load.image('grass:1x1', 'images/grass_1x1.png');
-  this.game.load.image('hero', 'images/hero_stopped.png');
   this.game.load.image('invisible-wall', 'images/invisible_wall.png');
   this.game.load.image('icon:coin', 'images/coin_icon.png');
   this.game.load.image('font:numbers', 'images/numbers.png');
@@ -108,6 +140,7 @@ PlayState.preload = function() {
   this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
   this.game.load.spritesheet('coin', 'images/coin_animated.png', 22, 22);
   this.game.load.spritesheet('spider', 'images/spider.png', 42, 32);
+  this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
 };
 
 PlayState.create = function() {
