@@ -188,8 +188,13 @@ PlayState._onHeroVsCoin = function(hero, coin) {
 };
 
 PlayState._onHeroVsEnemy = function(hero, enemy) {
-  this.sfx.stomp.play();
-  this.game.state.restart();
+  if (hero.body.velocity.y > 0) { // kill enemies when hero is falling
+    enemy.kill();
+    this.sfx.stomp.play();
+  } else { // game over -> restart the game
+    this.sfx.stomp.play();
+    this.game.state.restart();
+  }
 };
 
 window.onload = function() {
