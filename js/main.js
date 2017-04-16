@@ -101,6 +101,8 @@ PlayState.preload = function() {
   this.game.load.image('grass:1x1', 'images/grass_1x1.png');
   this.game.load.image('hero', 'images/hero_stopped.png');
   this.game.load.image('invisible-wall', 'images/invisible_wall.png');
+  this.game.load.image('icon:coin', 'images/coin_icon.png');
+  this.game.load.image('font:numbers', 'images/numbers.png');
   this.game.load.audio('sfx:jump', 'audio/jump.wav');
   this.game.load.audio('sfx:coin', 'audio/coin.wav');
   this.game.load.audio('sfx:stomp', 'audio/stomp.wav');
@@ -117,11 +119,13 @@ PlayState.create = function() {
 
   this.game.add.image(0, 0, 'background');
   this._loadLevel(this.game.cache.getJSON('level:1'));
+  this._createHud();
 };
 
 PlayState.update = function() {
   this._handleCollisions();
   this._handleInput();
+  this.coinFont.text = `x${this.coinPickupCount}`;
 };
 
 PlayState._handleCollisions = function () {
@@ -157,6 +161,18 @@ PlayState._loadLevel = function(data) {
   // enable gravity
   const GRAVITY = 1200;
   this.game.physics.arcade.gravity.y = GRAVITY;
+};
+
+PlayState._createHud = function() {
+  const NUMBERS_STR = '0123456789X ';
+  this.coinFont = this.game.add.retroFont('font:numbers', 20, 26, NUMBERS_STR, 6)
+  let coinIcon = this.game.make.image(0, 0, 'icon:coin');
+  let coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width, coinIcon.height / 2, this.coinFont);
+  coinScoreImg.anchor.set(0, 0.5);
+  this.hud = this.game.add.group();
+  this.hud.add(coinIcon);
+  this.hud.position.set(10, 10);
+  this.hud.add(coinScoreImg);
 };
 
 PlayState._spawnPlatform = function(platform) {
