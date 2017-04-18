@@ -154,6 +154,7 @@ PlayState.preload = function() {
   this.game.load.spritesheet('hero', 'images/hero.png', 36, 42);
   this.game.load.spritesheet('door', 'images/door.png', 42, 66);
   this.game.load.spritesheet('icon:key', 'images/key_icon.png', 34, 30);
+  this.game.load.spritesheet('decoration', 'images/decor.png', 42, 42);
 };
 
 PlayState.create = function() {
@@ -209,6 +210,9 @@ PlayState._loadLevel = function(data) {
 
   data.platforms.forEach(this._spawnPlatform, this);
   data.coins.forEach(this._spawnCoin, this);
+  data.decoration.forEach(function(deco) {
+    this.bgDecoration.add(this.game.add.image(deco.x, deco.y, 'decoration', deco.frame));
+  }, this);
 
   this._spawnDoor(data.door.x, data.door.y);
   this._spawnKey(data.key.x, data.key.y);
